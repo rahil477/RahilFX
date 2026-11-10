@@ -11,14 +11,14 @@
       return '[' + items.join(',') + ']';
     }
     var pairs = [];
-    for (var key in value) if (value.hasOwnProperty(key)) pairs.push(quote(key) + ':' + encode(value[key]));
+    for (var key in value) if (Object.prototype.hasOwnProperty.call(value, key)) pairs.push(quote(key) + ':' + encode(value[key]));
     return '{' + pairs.join(',') + '}';
   }
   function respond(data) { return encode({ ok:true, data:data }); }
   function fail(error) { return encode({ ok:false, error:String(error && error.message || error || 'Host operation failed.') }); }
   function text(value) { return value == null ? '' : String(value); }
   function activeComp() {
-    return typeof CompItem !== 'undefined' && app.project.activeItem && app.project.activeItem instanceof CompItem ? app.project.activeItem : null;
+    return typeof CompItem !== 'undefined' && app.project && app.project.activeItem && app.project.activeItem instanceof CompItem ? app.project.activeItem : null;
   }
   function withUndo(label, action) {
     var started = false;
@@ -33,12 +33,18 @@
         var seq = app.project.activeSequence;
         info.host = 'Premiere Pro'; info.sequence = text(seq.name || 'Active sequence');
         try {
-          var settings = seq.getSettings && seq.getSettings();
-          var width = settings && settings.videoFrameWidth || seq.frameSizeHorizontal;
-          var height = settings && settings.videoFrameHeight || seq.frameSizeVertical;
+          var width = seq.frameSizeHorizontal,
+              height = seq.frameSizeVertical,
+              fpsValue = null;
+          if (seq.getSettings && typeof seq.getSettings === 'function') {
+            var settings = seq.getSettings();
+            width = settings && settings.videoFrameWidth || width;
+            height = settings && settings.videoFrameHeight || height;
+            fpsValue = settings && settings.videoFrameRate;
+          }
           if (width && height) info.resolution = width + ' × ' + height;
-          var fps = settings && settings.videoFrameRate && settings.videoFrameRate.seconds;
-          if (fps) info.fps = (1 / Number(fps)).toFixed(3);
+          if (fpsValue && fpsValue !== 0) info.fps = (1 / Number(fpsValue)).toFixed(3);
+          else if (seq && seq.frameRate) info.fps = Number(seq.frameRate).toFixed(3);
         } catch (_) {}
         return respond(info);
       }
@@ -62,14 +68,38 @@
         var layers = comp.selectedLayers, changed = 0;
         if (!layers || !layers.length) return fail('Select one or more composition layers first.');
         for (var i = 0; i < layers.length; i++) {
-          if (layers[i].locked) continue;
-          layers[i].stretch = 10000 / speed;
-          changed++;
+          var layer = layers[i];
+          if (layer && !layer.locked) {
+            layer.stretch = 10000 / speed;
+            changed++;
+          }
         }
         if (!changed) return fail('No editable selected layers were found.');
         return respond({ host:'After Effects', changed:changed, speedPercent:speed });
       });
-      if (app.project.activeSequence) return fail('Premiere Pro constant-speed editing is not yet implemented through the supported public scripting API. No clips were changed.');
+      if (app.project.activeSequence) {
+        var seq = app.project.activeSequence;
+        var clips = [];
+        for (var t = 0; t < seq.videoTracks.numTracks; t++) {
+          var track = seq.videoTracks[t];
+          if (!track || !track.clips || !track.clips.numItems) continue;
+          for (var c = 0; c < track.clips.numItems; c++) {
+            var clip = track.clips[c];
+            if (clip && clip.isSelected && clip.isSelected()) clips.push(clip);
+          }
+        }
+        if (!clips.length) return fail('Select one or more timeline clips first.');
+        var changed = 0;
+        for (var i = 0; i < clips.length; i++) {
+          var currentClip = clips[i];
+          if (currentClip && typeof currentClip.speed !== 'undefined') {
+            currentClip.speed = speed;
+            changed++;
+          }
+        }
+        if (!changed) return fail('Selected clips were found, but this Premiere version does not expose a compatible speed property.');
+        return respond({ host:'Premiere Pro', changed:changed, speedPercent:speed });
+      }
       return fail('Activate a Premiere sequence or After Effects composition first.');
     } catch (error) { return fail(error); }
   }
@@ -110,11 +140,16 @@
       return withUndo('RahilFX: Fade selected layers in', function () {
         var changed = 0;
         for (var i = 0; i < layers.length; i++) {
-          var layer = layers[i]; if (layer.locked) continue;
-          var opacity = layer.property('ADBE Transform Group').property('ADBE Opacity');
-          var start = Math.max(layer.inPoint, comp.time), end = Math.min(start + seconds, layer.outPoint);
-          if (end <= start) continue;
-          opacity.setValueAtTime(start, 0); opacity.setValueAtTime(end, 100); changed++;
+          var layer = layers[i];
+          if (layer && !layer.locked) {
+            var opacity = layer.property('ADBE Transform Group').property('ADBE Opacity');
+            var start = layer.inPoint;
+            var end = Math.min(layer.outPoint, start + seconds);
+            if (end <= start) continue;
+            opacity.setValueAtTime(start, 0);
+            opacity.setValueAtTime(end, 100);
+            changed++;
+          }
         }
         if (!changed) return fail('No editable selected layers could be faded.');
         return respond({ host:'After Effects', changed:changed, duration:seconds });

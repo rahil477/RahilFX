@@ -21,14 +21,31 @@
       <div class="card"><h2 data-i18n="quickStart">Quick start</h2><p data-i18n="quickStartText">Select clips or layers in the host timeline, then use Edit. Subtitle tools work with text you provide.</p><p class="notice" data-i18n="safetyNote">Save a project copy before applying changes. Use the host application's Undo if needed.</p></div>
     </section>
     <section class="view" id="view-edit">
-      <div class="card"><h1 data-i18n="speedControl">Speed control</h1><p class="muted" data-i18n="speedDescription">Set selected After Effects layer stretch. Premiere speed editing is not available in this starter.</p><label for="speed">Speed (%)</label><div class="inline"><input id="speed" type="number" min="1" max="1000" value="100"><button id="apply-speed" class="primary" data-i18n="apply">Apply</button></div><div class="preset-row"><button class="preset" data-speed="50">50%</button><button class="preset" data-speed="100">100%</button><button class="preset" data-speed="200">200%</button><button class="preset" data-speed="400">400%</button></div></div>
-      <div class="card"><h2 data-i18n="aeTools">After Effects tools</h2><label for="text-layer" data-i18n="textLayer">Text layer</label><div class="inline"><input id="text-layer" type="text" placeholder="Your title"><button id="add-text" data-i18n="addText">Add text</button></div><label for="solid-name" data-i18n="solidLayer">Solid layer</label><div class="inline"><input id="solid-name" type="text" value="RahilFX Solid"><button id="add-solid" data-i18n="addSolid">Add solid</button></div><label for="fade-duration" data-i18n="fadeIn">Fade selected layers in (seconds)</label><div class="inline"><input id="fade-duration" type="number" min="0.1" max="10" step="0.1" value="0.5"><button id="apply-fade" data-i18n="apply">Apply</button></div><p class="notice" data-i18n="aeNote">These operations apply only to an active After Effects composition and are grouped in Undo.</p></div>
-      <div class="card"><h2 data-i18n="featureStatus">Feature status</h2><p data-i18n="featureStatusText">Host-specific tools are under active development; see the roadmap for implemented and planned features.</p></div>
+      <div class="card">
+        <h1 data-i18n="speedControl">Speed control</h1>
+        <p class="muted" data-i18n="speedDescription">Apply a constant speed change to selected clips (Premiere) or selected layer stretch (After Effects).</p>
+        <label for="speed">Speed (%)</label>
+        <div class="inline"><input id="speed" type="number" min="1" max="1000" value="100"><button id="apply-speed" class="primary" data-i18n="apply">Apply</button></div>
+        <div class="preset-row"><button class="preset" data-speed="50">50%</button><button class="preset" data-speed="100">100%</button><button class="preset" data-speed="200">200%</button><button class="preset" data-speed="400">400%</button></div>
+      </div>
+      <div class="card">
+        <h2 data-i18n="aeTools">After Effects tools</h2>
+        <label for="text-layer" data-i18n="textLayer">Text layer</label>
+        <div class="inline"><input id="text-layer" type="text" placeholder="Your title"><button id="add-text" data-i18n="addText">Add text</button></div>
+        <label for="solid-name" data-i18n="solidLayer">Solid layer</label>
+        <div class="inline"><input id="solid-name" type="text" value="RahilFX Solid"><button id="add-solid" data-i18n="addSolid">Add solid</button></div>
+        <label for="fade-duration" data-i18n="fadeIn">Fade selected layers in (seconds)</label>
+        <div class="inline"><input id="fade-duration" type="number" min="0.1" max="10" step="0.1" value="0.5"><button id="apply-fade" data-i18n="apply">Apply</button></div>
+        <p class="notice" data-i18n="aeNote">These operations apply only to an active After Effects composition and are grouped in Undo.</p>
+      </div>
+      <div class="card"><h2 data-i18n="featureStatus">Feature status</h2><p data-i18n="featureStatusText">Host-specific tools are under active development; feel free to test speed and layer helpers on a duplicate project before shipping work.</p></div>
     </section>
-    <section class="view" id="view-captions"><div class="card"><h1 data-i18n="subtitleTool">Manual subtitle helper</h1><p class="muted" data-i18n="subtitleDescription">Paste a transcript. It will be split into short caption cues and exported as an SRT file. No automatic transcription or translation is performed.</p><label for="transcript" data-i18n="transcript">Transcript</label><textarea id="transcript" rows="8" placeholder="Paste transcript text here…"></textarea><div class="inline field-row"><label for="words-per-caption" data-i18n="wordsPerCaption">Words per caption</label><input id="words-per-caption" type="number" min="1" max="12" value="4"></div><div class="inline field-row"><label for="seconds-per-caption" data-i18n="secondsPerCaption">Seconds per caption</label><input id="seconds-per-caption" type="number" min="1" max="15" step="0.5" value="2.5"></div><button id="download-srt" class="primary full" data-i18n="downloadSrt">Generate and download SRT</button></div><div class="card"><p class="notice" data-i18n="captionNote">Review timing and text before importing the SRT into your editing project.</p></div></section>
+    <section class="view" id="view-captions">
+      <div class="card"><h1 data-i18n="subtitleTool">Manual subtitle helper</h1><p class="muted" data-i18n="subtitleDescription">Paste a transcript. It will be split into short caption cues and exported as an SRT file. No automatic transcription or translation is performed.</p><label for="transcript" data-i18n="transcript">Transcript</label><textarea id="transcript" rows="8" placeholder="Paste transcript text here…"></textarea><div class="inline field-row"><label for="words-per-caption" data-i18n="wordsPerCaption">Words per caption</label><input id="words-per-caption" type="number" min="1" max="12" value="4"></div><div class="inline field-row"><label for="seconds-per-caption" data-i18n="secondsPerCaption">Seconds per caption</label><input id="seconds-per-caption" type="number" min="1" max="15" step="0.5" value="2.5"></div><button id="download-srt" class="primary full" data-i18n="downloadSrt">Generate and download SRT</button></div><div class="card"><p class="notice" data-i18n="captionNote">Review timing and text before importing the SRT into your editing project.</p></div>
+    </section>
     <section class="view" id="view-library"><div class="card"><h1 data-i18n="library">Feature roadmap</h1><div id="feature-list" class="feature-list"></div></div></section>
   </main>
-  <footer><span id="message" role="status" aria-live="polite">Ready</span><span>RahilFX 0.1.1</span></footer>
+  <footer><span id="message" role="status" aria-live="polite">Ready</span><span>RahilFX 0.1.2</span></footer>
   <script src="shared/core.js"></script><script src="features/catalog.js"></script><script src="scripts/cep-bridge.js"></script><script src="scripts/panel.js"></script>
 </body>
 </html>

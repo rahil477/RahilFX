@@ -4,28 +4,36 @@ An original, extensible Adobe CEP panel foundation for Premiere Pro and After Ef
 
 > RahilFX is an independent project. It does not include or reproduce another product's code, branding, templates, LUTs, or audio assets. Planned features are not claims of current functionality.
 
-## Implemented in 0.1.1
+## Current progress (0.1.2)
 
-- One CEP panel declaration for Premiere Pro and After Effects.
-- Host bridge with guarded project/sequence/composition information.
-- After Effects: set selected layer stretch, add a text layer, add a composition-sized solid, and fade selected layers in. Operations are grouped in AE Undo.
-- Manual transcript segmentation and SRT download. This does **not** perform speech recognition, translation, or timeline insertion.
-- English/Azerbaijani UI strings, theme preference, and a feature-status roadmap.
-- Node.js tests and repository validation.
+Implemented:
+- Shared CEP panel declaration for Premiere Pro and After Effects.
+- Host detection and guarded project/sequence/composition information.
+- Premiere clip speed action with a safe guard for selected clips in active sequence.
+- After Effects layer stretch, text layer creation, solid creation, and fade-in helpers.
+- Manual transcript segmentation and SRT download. This does not perform ASR/translation or insert captions into the timeline.
+- English/Azerbaijani UI strings, theme preference, and feature-status roadmap.
+- Node.js tests and validation.
 
-Premiere clip speed editing, automatic captions, scene/beat/silence analysis, speed ramps, templates, SFX and LUT tools remain planned or under investigation. The feature table in [docs/FEATURES.md](docs/FEATURES.md) is the authoritative status list.
+Planned or under research:
+- Speed-ramp curves and custom presets
+- Scene detection and marker creation
+- Silence/filler-word removal
+- Auto transcription and translation
+- Motion graphics/template library
+- Audio SFX and LUT packs
+
+See [docs/FEATURES.md](docs/FEATURES.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and [docs/INSTALLATION.md](docs/INSTALLATION.md).
 
 ## Requirements and development
 
-- Adobe Premiere Pro or After Effects that supports CEP/legacy extensions. Host APIs vary by release and require in-app testing.
-- Node.js 18+ to run validation and tests; the CEP panel itself uses vanilla JavaScript.
+- Adobe Premiere Pro or After Effects with CEP/legacy extension support. Host APIs vary by release; test with duplicate projects.
+- Node.js 18+ to run validation and tests.
 
 ```sh
 npm test
 npm run validate
 ```
-
-See [docs/INSTALLATION.md](docs/INSTALLATION.md) for local install instructions and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module design. Test edits on duplicate projects and use the application's Undo if needed. No media or project data is uploaded by this source.
 
 ## License
 

@@ -1,6 +1,5 @@
-## 0.1.1 — host tools and manifest repair
-- Replaced malformed manifest placeholders with valid CEP manifest elements.
-- Added an ExtendScript-safe JSON response encoder for older CEP environments.
-- Added After Effects selected-layer stretch, text/solid creation, and fade-in keyframes, each grouped in Undo.
-- Changed Premiere speed control to return an explicit unsupported result rather than imply an edit occurred.
-- Added host buttons, feature status labels, and expanded documentation/validation.
+## 0.1.2 — Premiere safe-speed update and AE utilities
+- Added a safer Premiere clip speed path for selected active sequence clips.
+- Kept host operations explicit and undo-safe, with clear unsupported result messages.
+- Extended the UI to trigger After Effects layer operations more directly from the panel.
+- Updated docs and roadmap to reflect the current project status.

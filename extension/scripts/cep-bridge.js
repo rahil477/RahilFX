@@ -1,4 +1,4 @@
-(function () {
+(function (root) {
   'use strict';
   window.RFXBridge = {
     available: function () { return !!(window.__adobe_cep__ && window.__adobe_cep__.evalScript); },
