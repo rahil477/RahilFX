@@ -1,6 +1,13 @@
 (function (root) {
   'use strict';
   var RFX = {};
+  var rampPresets = {
+    soft: { name: 'Soft', startPercent: 70, endPercent: 120, durationSeconds: 1.5 },
+    cinematic: { name: 'Cinematic', startPercent: 55, endPercent: 140, durationSeconds: 2.0 },
+    bold: { name: 'Bold', startPercent: 85, endPercent: 180, durationSeconds: 1.0 },
+    elastic: { name: 'Elastic', startPercent: 60, endPercent: 160, durationSeconds: 2.5 }
+  };
+
   function quote(value) { return '"' + String(value).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r/g, '\\r').replace(/\n/g, '\\n').replace(/\t/g, '\\t') + '"'; }
   function encode(value) {
     if (value === null || typeof value === 'undefined') return 'null';
@@ -14,7 +21,7 @@
     for (var key in value) if (Object.prototype.hasOwnProperty.call(value, key)) pairs.push(quote(key) + ':' + encode(value[key]));
     return '{' + pairs.join(',') + '}';
   }
-  function respond(data) { return encode({ ok:true, data:data }); }
+  function respond(data, more) { return encode({ ok:true, data:data, kind:more || null }); }
   function fail(error) { return encode({ ok:false, error:String(error && error.message || error || 'Host operation failed.') }); }
   function text(value) { return value == null ? '' : String(value); }
   function activeComp() {
@@ -58,6 +65,7 @@
       return respond(info);
     } catch (error) { return fail(error); }
   }
+
   function applySpeed(percent) {
     try {
       var speed = Number(percent);
@@ -103,6 +111,77 @@
       return fail('Activate a Premiere sequence or After Effects composition first.');
     } catch (error) { return fail(error); }
   }
+
+  function applyRampPreset(name) {
+    try {
+      var key = String(name || 'soft').toLowerCase();
+      var preset = rampPresets[key] || rampPresets.soft;
+      if (typeof app === 'undefined' || !app.project) return fail('No active project.');
+      if (app.project.activeSequence) {
+        var seq = app.project.activeSequence;
+        var clips = [];
+        for (var t = 0; t < seq.videoTracks.numTracks; t++) {
+          var track = seq.videoTracks[t];
+          if (!track || !track.clips || !track.clips.numItems) continue;
+          for (var c = 0; c < track.clips.numItems; c++) {
+            var clip = track.clips[c];
+            if (clip && clip.isSelected && clip.isSelected()) clips.push(clip);
+          }
+        }
+        if (!clips.length) return fail('Select one or more timeline clips first.');
+        var changed = 0;
+        for (var i = 0; i < clips.length; i++) {
+          var clip = clips[i];
+          if (clip && typeof clip.speed !== 'undefined') {
+            var currentSpeed = Number(clip.speed) || 100;
+            clip.speed = Math.round((currentSpeed * (preset.startPercent / 100)) * 100) / 100;
+            changed++;
+          }
+        }
+        if (!changed) return fail('Selected clips were found, but this Premiere version does not expose a compatible speed property.');
+        return respond({ host:'Premiere Pro', preset:preset.name, changed:changed, startPercent:preset.startPercent, endPercent:preset.endPercent }, 'ramp');
+      }
+      return fail('Activate a Premiere sequence to apply a speed-ramp preset.');
+    } catch (error) { return fail(error); }
+  }
+
+  function createSceneMarkers() {
+    try {
+      if (typeof app === 'undefined' || !app.project || !app.project.activeSequence) return fail('Activate a Premiere sequence to create scene markers.');
+      var seq = app.project.activeSequence;
+      var clips = [];
+      for (var t = 0; t < seq.videoTracks.numTracks; t++) {
+        var track = seq.videoTracks[t];
+        if (!track || !track.clips || !track.clips.numItems) continue;
+        for (var c = 0; c < track.clips.numItems; c++) {
+          var clip = track.clips[c];
+          if (clip && clip.isSelected && clip.isSelected()) clips.push(clip);
+        }
+      }
+      if (!clips.length) return fail('Select one or more timeline clips first.');
+      var created = 0;
+      if (seq.markers && typeof seq.markers.createMarker === 'function') {
+        for (var i = 0; i < clips.length; i++) {
+          var clip = clips[i];
+          var marker = seq.markers.createMarker(clip.start);
+          if (marker) {
+            marker.name = 'Scene ' + (i + 1);
+            created++;
+          }
+        }
+      } else if (seq.markers && typeof seq.markers.createMarkerAtTime === 'function') {
+        for (var j = 0; j < clips.length; j++) {
+          var mClip = clips[j];
+          var result = seq.markers.createMarkerAtTime(mClip.start, 'Scene ' + (j + 1));
+          if (result) created++;
+        }
+      } else {
+        return fail('This Premiere version does not expose marker creation for the selected clips.');
+      }
+      return respond({ host:'Premiere Pro', markersCreated:created }, 'scene');
+    } catch (error) { return fail(error); }
+  }
+
   function addTextLayer(value) {
     try {
       var comp = activeComp();
@@ -116,6 +195,7 @@
       });
     } catch (error) { return fail(error); }
   }
+
   function addSolid(name, red, green, blue) {
     try {
       var comp = activeComp();
@@ -129,6 +209,7 @@
       });
     } catch (error) { return fail(error); }
   }
+
   function fadeSelectedLayers(duration) {
     try {
       var comp = activeComp();
@@ -156,8 +237,11 @@
       });
     } catch (error) { return fail(error); }
   }
+
   RFX.getProjectInfo = getProjectInfo;
   RFX.applySpeed = applySpeed;
+  RFX.applyRampPreset = applyRampPreset;
+  RFX.createSceneMarkers = createSceneMarkers;
   RFX.addTextLayer = addTextLayer;
   RFX.addSolid = addSolid;
   RFX.fadeSelectedLayers = fadeSelectedLayers;

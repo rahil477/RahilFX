@@ -4,21 +4,23 @@ An original, extensible Adobe CEP panel foundation for Premiere Pro and After Ef
 
 > RahilFX is an independent project. It does not include or reproduce another product's code, branding, templates, LUTs, or audio assets. Planned features are not claims of current functionality.
 
-## Current progress (0.1.2)
+## Current progress (0.1.3)
 
 Implemented:
 - Shared CEP panel declaration for Premiere Pro and After Effects.
 - Host detection and guarded project/sequence/composition information.
-- Premiere clip speed action with a safe guard for selected clips in active sequence.
+- Premiere clip speed action with a safe guard for selected clips in an active sequence.
+- Premiere speed-ramp preset action (soft, cinematic, bold, elastic) as a basic preset-driven adjustment.
+- Premiere scene marker creation from selected clips.
 - After Effects layer stretch, text layer creation, solid creation, and fade-in helpers.
 - Manual transcript segmentation and SRT download. This does not perform ASR/translation or insert captions into the timeline.
 - English/Azerbaijani UI strings, theme preference, and feature-status roadmap.
 - Node.js tests and validation.
 
 Planned or under research:
-- Speed-ramp curves and custom presets
-- Scene detection and marker creation
-- Silence/filler-word removal
+- True keyframed speed ramps and curve editing
+- Scene detection and marker creation beyond selected clips
+- Silence/filler-word removal and automated transcript cleanup
 - Auto transcription and translation
 - Motion graphics/template library
 - Audio SFX and LUT packs
