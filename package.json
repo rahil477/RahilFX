@@ -1,0 +1,11 @@
+{
+  "name": "rahilfx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Extensible CEP panel foundation for Premiere Pro and After Effects",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate.js"
+  },
+  "engines": { "node": ">=18" }
+}
