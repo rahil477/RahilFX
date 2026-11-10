@@ -1,39 +1,32 @@
 # RahilFX
 
-An original, extensible Adobe CEP panel project for Premiere Pro and After Effects. This repository establishes the shared panel, host bridge, basic project inspection, selected-layer/clip speed controls where the host scripting API permits them, and a manual subtitle-to-SRT workflow.
+An original, extensible Adobe CEP panel foundation for Premiere Pro and After Effects. The repository is being built incrementally; it is not yet a complete editing suite.
 
-> RahilFX is an independent project. It does not include or reproduce UmutcanFX code, branding, templates, LUTs, or audio assets. Feature names in the roadmap describe intended capabilities, not a claim that they are already implemented.
+> RahilFX is an independent project. It does not include or reproduce another product's code, branding, templates, LUTs, or audio assets. Planned features are not claims of current functionality.
 
-## Current status
+## Implemented in 0.1.1
 
-This is the first working foundation, not a finished all-features product. Implemented now:
-- Shared CEP panel for Premiere Pro and After Effects (CEP/legacy extension host).
-- Host detection and guarded project/sequence/composition information.
-- Selected Premiere timeline clip speed and selected After Effects layer stretch controls (host/version dependent; test on a copy of a project).
-- Manual transcript segmentation and SRT download; this does not perform speech recognition or translation.
-- English/Azerbaijani UI strings, theme toggle, and local settings persistence.
-- Feature inventory and a Node.js test/validation command.
+- One CEP panel declaration for Premiere Pro and After Effects.
+- Host bridge with guarded project/sequence/composition information.
+- After Effects: set selected layer stretch, add a text layer, add a composition-sized solid, and fade selected layers in. Operations are grouped in AE Undo.
+- Manual transcript segmentation and SRT download. This does **not** perform speech recognition, translation, or timeline insertion.
+- English/Azerbaijani UI strings, theme preference, and a feature-status roadmap.
+- Node.js tests and repository validation.
 
-See [docs/FEATURES.md](docs/FEATURES.md), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), and [docs/INSTALLATION.md](docs/INSTALLATION.md).
+Premiere clip speed editing, automatic captions, scene/beat/silence analysis, speed ramps, templates, SFX and LUT tools remain planned or under investigation. The feature table in [docs/FEATURES.md](docs/FEATURES.md) is the authoritative status list.
 
-## Requirements
+## Requirements and development
 
-- Adobe Premiere Pro or After Effects with CEP/legacy extensions enabled.
-- Node.js 18+ only for project validation and tests (the panel itself uses vanilla JavaScript).
-
-## Development
+- Adobe Premiere Pro or After Effects that supports CEP/legacy extensions. Host APIs vary by release and require in-app testing.
+- Node.js 18+ to run validation and tests; the CEP panel itself uses vanilla JavaScript.
 
 ```sh
 npm test
 npm run validate
 ```
 
-The extension source is under `extension/`. CEP extensions are installed in the user-level `Adobe/CEP/extensions/RahilFX` folder; detailed instructions and compatibility caveats are in the installation guide.
-
-## Safety
-
-Speed changes modify the current project. Save a copy first and use the host application's Undo immediately if the result is not wanted. This starter does not promise automatic project backups or one-click rollback. No project data is uploaded or transmitted by this code.
+See [docs/INSTALLATION.md](docs/INSTALLATION.md) for local install instructions and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the module design. Test edits on duplicate projects and use the application's Undo if needed. No media or project data is uploaded by this source.
 
 ## License
 
-MIT for the original source code in this repository. Bundled third-party libraries/assets are intentionally not included. Adobe product names are used only to describe compatibility.
+MIT for original source code in this repository. No third-party libraries or media assets are bundled.

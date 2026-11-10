@@ -1,7 +1,6 @@
-# Changelog
-
-## 0.1.0 — initial scaffold
-- Added shared CEP panel declaration for Premiere Pro and After Effects.
-- Added localizable panel UI, theme preferences, project information bridge, and guarded speed controls.
-- Added manual transcript segmentation and SRT download utility with tests.
-- Added feature inventory, architecture, installation, and safety documentation.
+## 0.1.1 — host tools and manifest repair
+- Replaced malformed manifest placeholders with valid CEP manifest elements.
+- Added an ExtendScript-safe JSON response encoder for older CEP environments.
+- Added After Effects selected-layer stretch, text/solid creation, and fade-in keyframes, each grouped in Undo.
+- Changed Premiere speed control to return an explicit unsupported result rather than imply an edit occurred.
+- Added host buttons, feature status labels, and expanded documentation/validation.

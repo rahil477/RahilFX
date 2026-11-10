@@ -15,6 +15,9 @@
       });
     },
     getProjectInfo: function () { return this.call('RFX.getProjectInfo()'); },
-    applySpeed: function (percent) { return this.call('RFX.applySpeed(' + JSON.stringify(Number(percent)) + ')'); }
+    applySpeed: function (percent) { return this.call('RFX.applySpeed(' + JSON.stringify(Number(percent)) + ')'); },
+    addText: function (value) { return this.call('RFX.addTextLayer(' + JSON.stringify(String(value)) + ')'); },
+    addSolid: function (name) { return this.call('RFX.addSolid(' + JSON.stringify(String(name)) + ',0.12,0.12,0.16)'); },
+    fadeIn: function (duration) { return this.call('RFX.fadeSelectedLayers(' + JSON.stringify(Number(duration)) + ')'); }
   };
 }());
